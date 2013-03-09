@@ -1,0 +1,333 @@
+//
+//
+// Configuration file for MineSpy
+//
+// @author Ben Allen
+//
+//
+
+//
+// <> : mandatory argument
+// [] : optional argument
+// () : implied type
+// "" : enclose in double quote marks, enclosed text may not contain "
+// `` : string literal
+// |  : xor
+//
+// Commands:
+//	- savedir <"path name">
+//			Adds a path whose subdirectories should be tested as Minecraft saves. Any subdirectory
+//			with child "level.dat" will be available to select as a world to render. The "saves" folder
+//			in ".minecraft" will automatically be added. If the path name begins with "~/" the "~" will
+//			be replaced with the current user's home directory. All "/" will be replaced with the system
+//			file separator.
+//
+//	- minecraftdir <"path name">
+//			Adds a path to be tested for the minecraft directory.
+//			The first directory found (in order listed) with child "bin/minecraft.jar" will be used.
+//			If the path name begins with "~/" the "~" will be replaced with the current user's home directory.
+//			All "/" will be replaced with the system file separator.
+//
+//	- block <(int) block id>
+//			Sets the focused block id.
+//
+//	- data <(int) data value | `all`>
+//			Sets the focused data value; remains in effect until the next call to 'block'.
+//
+//	- biome <(int) biome id | `all`>
+//			Sets the focused biome id; remains in effect until the next call to 'block'.
+//
+//	- datamask <(int) mask | `all`>
+//			Sets the mask for data values; remains in effect until the next call to 'block'.
+//			Usage:
+//			'datamask x data y color r g b' will set the color (for the focused blockid and biome) for
+//			all datavalues d such that (d BITWISE-AND x) == y.
+//
+//	- name <"block name">
+//			Sets the name of the focused block id.
+//
+//	- color <(int) red> <(int) green> <(int) blue>
+//			Sets the color of the focused block id. Range is 0 - 255 inclusive. All colors will be transparent black until set.
+//
+//	- alpha <(int) alpha value>
+//			Sets the alpha value of the next call to 'color'; is cleared (to 255) by the next call to 'color'.
+//
+//	- transparent
+//			Declares that the focused block id is transparent / non-opaque, in a game logic sense.
+//
+// Commands for creating / editing presets:
+//	- preset <"preset name">
+//			Focuses the named preset, creating it if necessary.
+//
+//	- shader <`block` | `pretty` | `hmap-grey` | `hmap-colour` | `biome` | `blocklight`>
+//			Sets the shader.
+//
+//	- skylight <(int) `0` to `15`>
+//			Sets the skylight level.
+//
+//	- forcebrightness <`on` | `off`>
+//			Turn forced skylight brightness on or off.
+//
+//	- cavemode <`on` | `off`>
+//			Turn cave mode on or off. Cave mode strips off the first layer of opaque blocks.
+//
+//	- showmarkers <`on` | `off`>
+//			Turn showing player locations on or off.
+//
+//	- includeblocks <"space-separated block id list"> 
+//			Set a block filter to include specified.
+//
+//	- excludeblocks <"space-separated block id list"> 
+//			Set a block filter to exclude specified.
+//
+//	- unfilterblocks
+//			Unset the block filter.
+//
+//	- includelevels <"space-separated y coord list">
+//			Set a y-level filter to include specified.
+//
+//	- excludelevels <"space-separated y coord list">
+//			Set a y-level filter to exclude specified.
+//
+//	- unfilterlevels
+//			Unset the level filter.
+//
+//	- throttle <(double) f>
+//			Set the fraction of total available CPU time the renderer will try to consume.
+//
+
+// Windows
+minecraftdir "~/AppData/.minecraft"
+minecraftdir "~/AppData/Roaming/.minecraft"
+
+// Linux
+minecraftdir "~/.minecraft"
+
+// Mac
+minecraftdir "~/Library/Application Support/minecraft"
+
+block 0 name "Air" transparent
+block 1 name "Stone" color 130 130 130
+block 2
+	name "Grass Block"
+	// FIXME river biome color (and others?)
+	color 80 255 48
+	biome 2 color 108 104 48 // desert
+	biome 17 color 108 104 48 // desert hills
+	biome 1 color 82 107 51 // plains
+	biome 4 color 69 109 51 // forest
+	biome 18 color 69 109 51 // forest hills
+	biome 21 color 47 114 31 // jungle
+	biome 22 color 47 114 31 // jungle hills
+	biome 5 color 74 103 83 // taiga
+	biome 19 color 74 103 83 // taiga hills
+	biome 12 color 74 103 83 // ice plains
+	biome 13 color 74 103 86 // ice mountains
+	biome 6 color 52 60 44 // swampland
+	biome 3 color 111 142 122 // extreme hills
+	biome 20 color 111 142 122 // extreme hills edge
+
+block 3 name "Dirt" color 69 49 34
+block 4 name "Cobblestone" color 123 123 123
+block 5
+	name "Wooden Planks"
+	data 0 color 154 125 77 // oak
+	data 1 color 102 76 46 // spruce
+	data 2 color 194 177 122 // birch
+	data 3 color 152 109 76 // jungle
+
+block 6 name "Saplings" transparent color 0 255 0
+block 7 name "Bedrock" color 80 80 80
+block 8
+	name "Water" transparent
+	alpha 100 color 31 43 157
+	biome 6 alpha 150 color 50 75 99
+ 
+block 9
+	name "Stationary Water" transparent
+	alpha 100 color 31 43 157
+	biome 6 alpha 130 color 50 75 99
+ 
+block 10 name "Lava" transparent color 255 128 0
+block 11 name "Stationary Lava" transparent color 255 128 0
+block 12 name "Sand" color 220 212 161
+block 13 name "Gravel" color 135 123 122
+block 14 name "Gold Ore" color 155 150 126
+block 15 name "Iron Ore" color 143 134 127
+block 16 name "Coal Ore" color 108 108 108
+block 17
+	name "Wood"
+	// bark side up
+	datamask 3
+	data 0 color 100 79 48 // oak
+	data 1 color 48 28 12 // spruce
+	data 2 color 213 213 208 // birch
+	data 3 color 88 69 27 // jungle
+	// up/down are the only ones cut side up
+	datamask all
+	data 0 color 176 143 89 // oak
+	data 1 color 176 143 89 // spruce
+	data 2 color 176 143 89 // birch
+	data 3 color 176 143 89 // jungle
+
+block 18
+	name "Leaves" transparent
+	color 0 96 0
+	data 0 alpha 200 color 34 85 11 // oak
+	data 1 alpha 200 color 44 71 44 // spruce
+	data 2 alpha 200 color 62 81 41 // birch
+	data 3 alpha 200 color 21 95 2 // jungle
+
+block 19 name "Sponge" color 174 174 53
+block 20 name "Glass" transparent alpha 64 color 255 255 255
+block 21 name "Lapis Lazuli Ore" color 90 105 139
+block 22 name "Lapis Lazuli Block" color 28 70 167
+block 23 name "Dispenser" color 123 123 123
+block 24 name "Sandstone" color 217 209 158
+block 25 name "Note Block" color 112 71 50
+block 26
+	name "Bed" transparent
+	datamask 8
+	data 0 color 148 29 29
+	data 8 color 191 138 139
+
+block 27 name "Powered Rail" transparent color 133 105 64
+block 28 name "Detector Rail" transparent color 119 94 87
+block 29 name "Sticky Piston" transparent color 123 123 123 // FIXME colour
+block 30 name "Cobweb" transparent alpha 128 color 255 255 255 
+block 31 name "Tall Grass" transparent alpha 100 color 32 80 11
+block 32 name "Dead Bush" transparent alpha 150 color 122 78 25
+block 33 name "Piston" transparent color 123 123 123 // FIXME colour
+block 34 name "Piston Extension" transparent color 123 123 123 // FIXME colour
+block 35
+	name "Wool"
+	data 0 color 222 222 222
+	data 1 color 219 125 63
+	data 2 color 180 81 189
+	data 3 color 107 138 201
+	data 4 color 177 166 39
+	data 5 color 66 174 57
+	data 6 color 208 132 53
+	data 7 color 65 65 65
+	data 8 color 155 161 161
+	data 9 color 47 111 138
+	data 10 color 126 62 182
+	data 11 color 46 57 141
+	data 12 color 79 50 31
+	data 13 color 53 71 27
+	data 14 color 151 52 49
+	data 15 color 26 22 22
+
+block 36 name "Block moved by Piston"
+block 37 name "Dandelion" transparent alpha 80 color 200 200 0
+block 38 name "Rose" transparent alpha 80 color 200 0 0
+block 39 name "Brown Mushroom" transparent alpha 80 color 146 111 88
+block 40 name "Red Mushroom" transparent alpha 80 color 181 53 56
+block 41 name "Block of Gold" color 254 249 87
+block 42 name "Block of Iron" color 229 229 229
+block 43
+	name "Double Slabs"
+	data 0 color 130 130 130 // Stone
+	data 1 color 217 209 158 // Sandstone
+	data 2 color 154 125 77 // Wooden (im guessing this is deprecated)
+	data 3 color 123 123 123 // Cobblestone
+	data 4 color 148 109 90 // Brick
+	data 5 color 125 125 125 // Stone Brick
+	data 6 color 45 23 27 // Nether Brick
+	data 7 color 237 235 228 // Quartz
+	data 8 color 124 124 124 // Smooth Stone
+	data 9 color 217 209 158 // Smooth Sandstone
+
+block 44
+	name "Slabs" transparent
+	datamask 7
+	data 0 color 130 130 130 // Stone
+	data 1 color 217 209 158 // Sandstone
+	data 2 color 154 125 77 // Wooden (im guessing this is deprecated)
+	data 3 color 123 123 123 // Cobblestone
+	data 4 color 148 109 90 // Brick
+	data 5 color 125 125 125 // Stone Brick
+	data 6 color 45 23 27 // Nether Brick
+	data 7 color 237 235 228 // Quartz
+
+block 45 name "Bricks" color 148 102 90
+block 46 name "TNT" color 94 53 41
+block 47 name "Bookshelf" color 154 125 77
+block 48 name "Moss Stone" color 98 120 98
+block 49 name "Obsidian" color 22 20 32
+block 50 name "Torch" transparent color 255 255 0
+block 51 name "Fire" transparent color 209 135 47
+block 52 name "Monster Spawner" transparent color 27 41 51
+block 53 name "Oak Wood Stairs" transparent color 154 125 77
+block 54 name "Chest" transparent color 160 112 36
+block 55 name "Redstone Wire" transparent color 220 0 0
+block 56 name "Diamond Ore" color 132 152 157
+block 57 name "Block of Diamond" color 131 229 224
+block 58 name "Crafting Table" color 119 77 46
+block 59 name "Wheat Seeds" transparent alpha 140 color 95 114 7
+block 60
+	name "Farmland" transparent
+	color 67 36 13
+	data 0 color 114 75 45
+
+block 61 name "Furnace" color 123 123 123
+block 62 name "Burning Furnace" color 123 123 123
+block 63 name "Sign Post" transparent alpha 50 color 154 125 77
+block 64 name "Wooden Door" transparent alpha 100 color 154 125 77
+block 65 name "Ladders" transparent alpha 50 color 154 125 77
+block 66 name "Rail" transparent alpha 150 color 120 107 86
+block 67 name "Cobblestone Stairs" transparent color 123 123 123
+block 68 name "Wall Sign" transparent alpha 50 color 154 125 77
+block 69 name "Lever" transparent alpha 82 color 106 89 64
+block 70 name "Stone Pressure Plate" transparent color 130 130 130
+block 71 name "Iron Door" transparent alpha 100 color 190 190 190
+block 72 name "Wooden Pressure Plate" transparent color 154 125 77
+block 73 name "Redstone Ore" color 138 92 92
+block 74 name "Glowing Redstone Ore" color 140 94 94
+block 75 name "Redstone Torch (inactive)" transparent color 50 0 0
+block 76 name "Redstone Torch (active)" transparent color 255 0 0
+block 77 name "Stone Button" transparent alpha 50 color 130 130 130
+block 78 name "Snow" transparent alpha 230 color 255 255 255
+block 79 name "Ice" transparent alpha 230 color 224 224 255
+block 80 name "Snow Block" color 255 255 255
+block 81 name "Cactus" transparent color 15 112 27
+block 82 name "Clay" color 160 165 178
+block 83 name "Sugar Cane" transparent alpha 100 color 153 198 105
+block 84 name "Jukebox" color 120 79 57
+block 85 name "Fence" transparent alpha 100 color 161 131 81
+block 86 name "Pumpkin" color 189 118 20
+block 87 name "Netherrack" color 108 55 53
+block 88 name "Soul Sand" color 85 65 52
+block 89 name "Glowstone" transparent color 161 143 72
+block 90 name "Nether Portal" transparent alpha 100 color 49 18 93
+block 91 name "Jack 'o' Lantern" color 189 118 20
+block 92 name "Cake Block" transparent color 230 195 196
+block 93 name "Redstone Repeater (inactive)" transparent color 149 141 141
+block 94 name "Redstone Repeater (active)" transparent color 169 140 141
+block 95 name "Locked Chest" transparent color 160 112 36
+block 96 name "Trapdoor" transparent alpha 200 color 140 106 53
+block 97
+	name "Monster Egg"
+	data 0 color 130 130 130 // Stone
+	data 1 color 123 123 123 // Cobblestone
+	data 2 color 125 125 125 // Stone Brick
+
+block 98 name "Stone Brick" color 125 125 125
+block 99 name "Huge Brown Mushroom" color 140 105 82
+block 100 name "Huge Red Mushroom" color 184 44 43
+
+
+block 106 name "Vines" transparent alpha 200 color 32 80 11
+
+block 141 name "Carrots" transparent alpha 200 color 26 121 3
+block 142 name "Potatoes" transparent alpha 200 color 48 169 40
+
+
+//
+// Buildcraft support (this should probs be in a separate file)
+//
+
+block 1520 name "Oil Moving" transparent alpha 190 color 0 0 0
+block 1521 name "Oil Still" transparent alpha 230 color 0 0 0
+
+

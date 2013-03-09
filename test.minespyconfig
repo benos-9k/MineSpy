@@ -1,0 +1,12 @@
+//
+// Test preset config
+//
+
+preset "my cool preset"
+shader block
+skylight 15
+forcebrightness on
+includeblocks "1520 1521"
+excludelevels "1 2 3 4 5"
+throttle 0.5
+
