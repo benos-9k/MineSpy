@@ -191,14 +191,24 @@ block 26
 	data 0 color 148 29 29
 	data 8 color 191 138 139
 
-block 27 name "Powered Rail" transparent color 133 105 64
-block 28 name "Detector Rail" transparent color 119 94 87
+block 27
+	name "Powered Rail" transparent
+	datamask 8
+	data 0 alpha 150 color 133 105 64
+	data 8 alpha 150 color 162 101 62
+
+block 28
+	name "Detector Rail" transparent
+	datamask 8
+	data 0 alpha 150 color 119 94 87
+	data 8 alpha 150 color 162 94 87
+
 block 29 name "Sticky Piston" transparent color 123 123 123 // FIXME colour
 block 30 name "Cobweb" transparent alpha 128 color 255 255 255 
 block 31 name "Tall Grass" transparent alpha 100 color 32 80 11
 block 32 name "Dead Bush" transparent alpha 150 color 122 78 25
 block 33 name "Piston" transparent color 123 123 123 // FIXME colour
-block 34 name "Piston Extension" transparent color 123 123 123 // FIXME colour
+block 34 name "Piston Extension" transparent alpha 160 color 123 123 123 // FIXME colour
 block 35
 	name "Wool"
 	data 0 color 222 222 222
@@ -315,16 +325,99 @@ block 97
 block 98 name "Stone Brick" color 125 125 125
 block 99 name "Huge Brown Mushroom" color 140 105 82
 block 100 name "Huge Red Mushroom" color 184 44 43
-
-
+block 101 name "Iron Bars" transparent alpha 100 color 109 108 106
+block 102 name "Glass Pane" transparent alpha 20 color 255 255 255
+block 103 name "Melon" color 141 145 35
+block 104 name "Pumpkin Stem" transparent alpha 100 color 128 186 84
+block 105 name "Melon Stem" transparent alpha 100 color 128 186 84
 block 106 name "Vines" transparent alpha 200 color 32 80 11
+block 107 name "Fence Gate" transparent alpha 100 color 161 131 81
+block 108 name "Brick Stairs" transparent color 148 109 90
+block 109 name "Stone Brick Stairs" transparent color 125 125 125
+block 110 name "Mycelium" color 109 99 104
+block 111 name "Lily Pad" transparent alpha 200 color 18 93 25
+block 112 name "Nether Brick" color 45 23 27
+block 113 name "Nether Brick Fence" transparent alpha 100 color 45 23 27
+block 114 name "Nether Brick Stairs" transparent color 45 23 27
+block 115 name "Nether Wart" transparent alpha 200 color 111 15 14
+block 116 name "Enchantment Table" transparent color 96 32 30
+block 117 name "Brewing Stand" transparent alpha 81 color 116 103 74
+block 118 name "Cauldron" color 52 52 52
+block 119 name "End Portal" transparent alpha 100 color 14 15 16
+block 120 name "End Portal Block" color 96 115 90
+block 121 name "End Stone" color 222 224 166
+block 122 name "Dragon Egg" transparent color 14 9 17
+block 123 name "Redstone Lamp (inactive)" color 92 56 34
+block 124 name "Redstone Lamp (active)" color 152 114 71
+block 125
+	name "Wooden Double Slab"
+	data 0 color 154 125 77 // oak
+	data 1 color 102 76 46 // spruce
+	data 2 color 194 177 122 // birch
+	data 3 color 152 109 76 // jungle
 
+block 126
+	name "Wooden Slab"
+	datamask 7
+	data 0 color 154 125 77 // oak
+	data 1 color 102 76 46 // spruce
+	data 2 color 194 177 122 // birch
+	data 3 color 152 109 76 // jungle
+
+block 127 name "Cocoa" transparent alpha 199 color 161 94 38
+block 128 name "Sandstone Stairs" color 217 209 158
+block 129 name "Emerald Ore" color 104 130 113
+block 130 name "Ender Chest" transparent color 14 15 16
+block 131 name "Tripwire Hook" transparent alpha 100 color 132 128 119
+block 132 name "Tripwire" transparent alpha 20 color 255 255 255
+block 133 name "Block of Emerald" color 81 220 118
+block 134 name "Spruce Wood Stairs" transparent color 102 76 46
+block 135 name "Birch Wood Stairs" transparent color 194 177 122
+block 136 name "Jungle Wood Stairs" transparent color 152 109 76
+block 137 name "Command Block" color 179 155 142
+block 138 name "Beacon" transparent color 130 231 226
+block 139 name "Cobblestone Wall" transparent alpha 200 color 123 123 123
+block 140
+	name "Flower Pot" transparent alpha 100 color 120 67 52
+	// FIXME flower pots
+	data 1 // Rose
+	data 2 // Dandelion
+	data 3 // Oak Sapling
+	data 4 // Spruce Sapling
+	data 5 // Birch Sapling
+	data 6 // Jungle Tree Sapling
+	data 7 // Red Mushroom
+	data 8 // Brown Mushroom
+	data 9 // Cactus
+	data 10 // Dead Bush
+	data 11 // Fern
+	
 block 141 name "Carrots" transparent alpha 200 color 26 121 3
 block 142 name "Potatoes" transparent alpha 200 color 48 169 40
+block 143 name "Wooden Button" transparent alpha 80 color 154 125 77
+block 144 name "Mob Head" transparent alpha 100 color 255 255 255 // TODO skull type is stored in a tile entity
+block 145 name "Anvil" transparent color 66 66 66
+block 146 name "Trapped Chest" transparent color 160 112 36
+block 147 name "Weighted Pressure Plate (Light)" transparent color 249 243 97
+block 148 name "Weighted Pressure Plate (Heavy)" transparent color 229 229 221
+block 149 name "Redstone Comparator (inactive)" transparent color 147 139 139
+block 150 name "Redstone Comparator (active)" transparent color 168 139 139
+block 151 name "Daylight Sensor" transparent color 148 133 111
+block 152 name "Block of Redstone" color 139 21 7
+block 153 name "Nether Quartz Ore" color 135 102 97
+block 154 name "Hopper" transparent color 59 59 59
+block 155 name "Block of Quartz" color 237 235 228
+block 156 name "Quartz Stairs" transparent color 237 235 228
+block 157
+	name "Activator Rail" transparent
+	datamask 8
+	data 0 alpha 150 color 93 69 60
+	data 8 alpha 150 color 146 70 60
 
+block 158 name "Dropper" color 123 123 123
 
 //
-// Buildcraft support (this should probs be in a separate file)
+// Buildcraft support
 //
 
 block 1520 name "Oil Moving" transparent alpha 190 color 0 0 0
