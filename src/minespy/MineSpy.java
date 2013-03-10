@@ -106,9 +106,9 @@ public class MineSpy {
 					if (p.getShowMarkers()) {
 						Tag level = Tag.parse(new DataInputStream(new GZIPInputStream(new FileInputStream(worlddir
 								.getPath() + File.separator + "level.dat"))));
-						pos_worldspawn[0] = level.child("Data").getDouble("SpawnX");
-						pos_worldspawn[1] = level.child("Data").getDouble("SpawnY");
-						pos_worldspawn[2] = level.child("Data").getDouble("SpawnZ");
+						pos_worldspawn[0] = level.getDouble("Data", "SpawnX");
+						pos_worldspawn[1] = level.getDouble("Data", "SpawnY");
+						pos_worldspawn[2] = level.getDouble("Data", "SpawnZ");
 						for (File f : new File(worlddir.getPath() + File.separator + "players").listFiles()) {
 							Tag player = Tag.parse(new DataInputStream(new GZIPInputStream(new FileInputStream(f))));
 							int playerdim = player.getInt("Dimension");
@@ -116,9 +116,9 @@ public class MineSpy {
 							if ((playerdim == 1) != (dim.equals(Dimension.END))) continue;
 							if ((playerdim == 0) != (dim.equals(Dimension.OVERWORLD))) continue;
 							double[] pos = new double[3];
-							pos[0] = player.child("Pos").getDouble(0);
-							pos[1] = player.child("Pos").getDouble(1);
-							pos[2] = player.child("Pos").getDouble(2);
+							pos[0] = player.getDouble("Pos", 0);
+							pos[1] = player.getDouble("Pos", 1);
+							pos[2] = player.getDouble("Pos", 2);
 							String name = f.getName().replaceFirst("\\.dat$", "");
 							players.put(name, pos);
 						}

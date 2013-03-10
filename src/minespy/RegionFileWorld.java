@@ -279,7 +279,7 @@ public class RegionFileWorld implements IWorld {
 					}
 				}
 			}
-			throw new NoSuchElementException();
+			throw new NoMoreChunksException();
 		}
 
 	}

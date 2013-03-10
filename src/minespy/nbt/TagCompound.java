@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 public class TagCompound extends Tag {
 
@@ -49,7 +50,9 @@ public class TagCompound extends Tag {
 
 	@Override
 	public Tag child(String tagname) {
-		return m_data.get(tagname);
+		Tag tag = m_data.get(tagname);
+		if (tag == null) throw new NoSuchElementException("Bad tagname: " + tagname);
+		return tag;
 	}
 
 	@Override

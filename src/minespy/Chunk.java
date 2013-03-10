@@ -1,6 +1,7 @@
 package minespy;
 
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 
 import minespy.nbt.*;
 
@@ -8,12 +9,12 @@ public final class Chunk implements IChunk {
 
 	public static final Chunk BLANK = new Chunk();
 
-	private final short[] m_blocks = new short[16 * 16 * 256];
-	private final byte[] m_data = new byte[16 * 16 * 256];
-	private final byte[] m_blocklight = new byte[16 * 16 * 256];
-	private final byte[] m_skylight = new byte[16 * 16 * 256];
-	private final byte[] m_biomes;
-	private final int[] m_heightmap;
+	private short[] m_blocks = new short[16 * 16 * 256];
+	private byte[] m_data = new byte[16 * 16 * 256];
+	private byte[] m_blocklight = new byte[16 * 16 * 256];
+	private byte[] m_skylight = new byte[16 * 16 * 256];
+	private byte[] m_biomes;
+	private int[] m_heightmap;
 
 	public Chunk() {
 		m_biomes = new byte[16 * 16];
@@ -23,16 +24,16 @@ public final class Chunk implements IChunk {
 
 	public Chunk(Tag root_) {
 		Tag level = root_.child("Level");
-		if (level.child("Biomes") != null) {
+		try {
 			m_biomes = level.get("Biomes");
-		} else {
+		} catch (NoSuchElementException e) {
 			m_biomes = new byte[16 * 16];
 			Arrays.fill(m_biomes, (byte) -1);
 		}
 
-		if (level.child("HeightMap") != null) {
+		try {
 			m_heightmap = level.get("HeightMap");
-		} else {
+		} catch (NoSuchElementException e) {
 			m_heightmap = new int[16 * 16];
 			// TODO precompute heightmap if not in file (is this even necessary?)
 			System.out.println("*** Ben: write the on-chunk-load heightmap computation! ***");
@@ -42,8 +43,10 @@ public final class Chunk implements IChunk {
 			byte section_y = t.get("Y");
 			byte[] section_blocks = t.get("Blocks");
 			byte[] section_add = null;
-			if (t.child("Add") != null) {
+			try {
 				section_add = t.get("Add");
+			} catch (NoSuchElementException e) {
+				// nothing to do
 			}
 			byte[] section_data = t.get("Data");
 			byte[] section_blocklight = t.get("BlockLight");

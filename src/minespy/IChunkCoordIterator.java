@@ -4,7 +4,7 @@ public interface IChunkCoordIterator {
 
 	/**
 	 * @return The next ChunkCoord.
-	 * @throws NoSuchElementException
+	 * @throws NoMoreChunksException
 	 *             If there are no more ChunkCoords.
 	 */
 	public ChunkCoord next();

@@ -356,7 +356,9 @@ public abstract class Tag implements Cloneable, Iterable<Tag> {
 	 * 
 	 * @param i
 	 *            Index of the child to get.
-	 * @return The tag, or null if there is none.
+	 * @return The tag.
+	 * @throws IndexOutOfBoundsException
+	 *             If there is no such child.
 	 * @throws UnsupportedOperationException
 	 *             If there are no children accessible by index.
 	 */
@@ -365,32 +367,13 @@ public abstract class Tag implements Cloneable, Iterable<Tag> {
 	}
 
 	/**
-	 * Short form of <code>child(index0).child(index1)...</code> without the possibility of NullPointerExceptions.
-	 * 
-	 * @param index0
-	 * @param index1
-	 * @param indices
-	 * @return The tag if found, or null otherwise.
-	 * @throws UnsupportedOperationException
-	 *             If there are no children accessible by index.
-	 */
-	public final Tag child(int index0, int index1, int... indices) {
-		Tag t = child(index0);
-		if (t == null) return null;
-		t = t.child(index1);
-		for (int i : indices) {
-			if (t == null) return null;
-			t = t.child(i);
-		}
-		return t;
-	}
-
-	/**
 	 * Find the first child of this tag with the specified name, where 'first' is implementation-defined.
 	 * 
 	 * @param tagname
 	 *            Name of the tag to get.
-	 * @return The tag if found, or null otherwise.
+	 * @return The tag.
+	 * @throws NoSuchElementException
+	 *             If there is no such child.
 	 * @throws UnsupportedOperationException
 	 *             If there are no children accessible by name.
 	 */
@@ -399,22 +382,27 @@ public abstract class Tag implements Cloneable, Iterable<Tag> {
 	}
 
 	/**
-	 * Short form of <code>child(name0).child(name1)...</code> without the possibility of NullPointerExceptions.
+	 * Short form of <code>child(i0).child(i1)...</code>. If a specified index is an <code>Integer</code>, it will be
+	 * used in a call to child-by-index, otherwise its <code>toString()</code> will be used in a call to child-by-name.
 	 * 
-	 * @param name0
-	 * @param name1
-	 * @param names
-	 * @return The tag if found, or null otherwise.
+	 * @param indices
+	 *            Indices of the children to find.
+	 * @return The tag. Returns <code>this</code> if <code>indices</code> is empty.
+	 * @throws IndexOutOfBoundsException
+	 *             If there is no child by the specified <code>Integer</code> index.
+	 * @throws NoSuchElementException
+	 *             If there is no child by the specified name index.
 	 * @throws UnsupportedOperationException
-	 *             If there are no children accessible by name.
+	 *             If there are no children accessible by the type of the specified index.
 	 */
-	public final Tag child(String name0, String name1, String... names) {
-		Tag t = child(name0);
-		if (t == null) return null;
-		t = t.child(name1);
-		for (String n : names) {
-			if (t == null) return null;
-			t = t.child(n);
+	public final Tag child(Object... indices) {
+		Tag t = this;
+		for (Object i : indices) {
+			if (i instanceof Integer) {
+				t = t.child((Integer) i);
+			} else {
+				t = t.child(i.toString());
+			}
 		}
 		return t;
 	}
@@ -447,9 +435,7 @@ public abstract class Tag implements Cloneable, Iterable<Tag> {
 	 *             If there are no children accessible by index or there is no directly accessible payload.
 	 */
 	public <T> T get(int i) {
-		Tag tag = child(i);
-		if (tag == null) throw new IndexOutOfBoundsException("Bad index: " + i);
-		return tag.get();
+		return child(i).get();
 	}
 
 	/**
@@ -466,9 +452,28 @@ public abstract class Tag implements Cloneable, Iterable<Tag> {
 	 *             If there are no children accessible by name or there is no directly accessible payload.
 	 */
 	public <T> T get(String tagname) {
-		Tag tag = child(tagname);
-		if (tag == null) throw new NoSuchElementException("Bad tagname: " + tagname);
-		return tag.get();
+		return child(tagname).get();
+	}
+
+	/**
+	 * Short form of <code>child(i0, i1...).get()</code>.
+	 * 
+	 * @param indices
+	 *            Indices of the children to find.
+	 * @return The value of the specified child tag.
+	 * @throws IndexOutOfBoundsException
+	 *             If there is no child by the specified <code>Integer</code> index.
+	 * @throws NoSuchElementException
+	 *             If there is no child by the specified name index.
+	 * @throws ClassCastException
+	 *             If the payload cannot be cast to type T.
+	 * @throws UnsupportedOperationException
+	 *             If there are no children accessible by the type of the specified index or there is no directly
+	 *             accessible payload.
+	 */
+	public <T> T get(Object... indices) {
+		return child(indices).get();
+
 	}
 
 	/**
@@ -493,9 +498,7 @@ public abstract class Tag implements Cloneable, Iterable<Tag> {
 	 *             payload cannot be interpreted as a boolean.
 	 */
 	public boolean getBool(int i) {
-		Tag tag = child(i);
-		if (tag == null) throw new IndexOutOfBoundsException("Bad index: " + i);
-		return tag.getBool();
+		return child(i).getBool();
 	}
 
 	/**
@@ -511,9 +514,25 @@ public abstract class Tag implements Cloneable, Iterable<Tag> {
 	 *             payload cannot be interpreted as a boolean.
 	 */
 	public boolean getBool(String tagname) {
-		Tag tag = child(tagname);
-		if (tag == null) throw new NoSuchElementException("Bad tagname: " + tagname);
-		return tag.getBool();
+		return child(tagname).getBool();
+	}
+
+	/**
+	 * Short form of <code>child(i0, i1...).getBool()</code>.
+	 * 
+	 * @param indices
+	 *            Indices of children to find.
+	 * @return A boolean representation of the payload of the specified child tag.
+	 * @throws IndexOutOfBoundsException
+	 *             If there is no child by the specified <code>Integer</code> index.
+	 * @throws NoSuchElementException
+	 *             If there is no child by the specified name index.
+	 * @throws UnsupportedOperationException
+	 *             If there are no children accessible by index or there is no directly accessible payload or the
+	 *             payload cannot be interpreted as a boolean.
+	 */
+	public boolean getBool(Object... indices) {
+		return child(indices).getBool();
 	}
 
 	/**
@@ -542,9 +561,7 @@ public abstract class Tag implements Cloneable, Iterable<Tag> {
 	 *             payload cannot be interpreted as a byte.
 	 */
 	public byte getByte(int i) {
-		Tag tag = child(i);
-		if (tag == null) throw new IndexOutOfBoundsException("Bad index: " + i);
-		return tag.getByte();
+		return child(i).getByte();
 	}
 
 	/**
@@ -560,9 +577,25 @@ public abstract class Tag implements Cloneable, Iterable<Tag> {
 	 *             payload cannot be interpreted as a byte.
 	 */
 	public byte getByte(String tagname) {
-		Tag tag = child(tagname);
-		if (tag == null) throw new NoSuchElementException("Bad tagname: " + tagname);
-		return tag.getByte();
+		return child(tagname).getByte();
+	}
+
+	/**
+	 * Short form of <code>child(i0, i1...).getByte()</code>.
+	 * 
+	 * @param indices
+	 *            Indices of children to find.
+	 * @return A byte representation of the payload of the specified child tag.
+	 * @throws IndexOutOfBoundsException
+	 *             If there is no child by the specified <code>Integer</code> index.
+	 * @throws NoSuchElementException
+	 *             If there is no child by the specified name index.
+	 * @throws UnsupportedOperationException
+	 *             If there are no children accessible by index or there is no directly accessible payload or the
+	 *             payload cannot be interpreted as a byte.
+	 */
+	public byte getByte(Object... indices) {
+		return child(indices).getByte();
 	}
 
 	/**
@@ -591,9 +624,7 @@ public abstract class Tag implements Cloneable, Iterable<Tag> {
 	 *             payload cannot be interpreted as a short.
 	 */
 	public short getShort(int i) {
-		Tag tag = child(i);
-		if (tag == null) throw new IndexOutOfBoundsException("Bad index: " + i);
-		return tag.getShort();
+		return child(i).getShort();
 	}
 
 	/**
@@ -609,9 +640,25 @@ public abstract class Tag implements Cloneable, Iterable<Tag> {
 	 *             payload cannot be interpreted as a short.
 	 */
 	public short getShort(String tagname) {
-		Tag tag = child(tagname);
-		if (tag == null) throw new NoSuchElementException("Bad tagname: " + tagname);
-		return tag.getShort();
+		return child(tagname).getShort();
+	}
+
+	/**
+	 * Short form of <code>child(i0, i1...).getShort()</code>.
+	 * 
+	 * @param indices
+	 *            Indices of children to find.
+	 * @return A short representation of the payload of the specified child tag.
+	 * @throws IndexOutOfBoundsException
+	 *             If there is no child by the specified <code>Integer</code> index.
+	 * @throws NoSuchElementException
+	 *             If there is no child by the specified name index.
+	 * @throws UnsupportedOperationException
+	 *             If there are no children accessible by index or there is no directly accessible payload or the
+	 *             payload cannot be interpreted as a short.
+	 */
+	public short getShort(Object... indices) {
+		return child(indices).getShort();
 	}
 
 	/**
@@ -640,9 +687,7 @@ public abstract class Tag implements Cloneable, Iterable<Tag> {
 	 *             payload cannot be interpreted as an int.
 	 */
 	public int getInt(int i) {
-		Tag tag = child(i);
-		if (tag == null) throw new IndexOutOfBoundsException("Bad index: " + i);
-		return tag.getInt();
+		return child(i).getInt();
 	}
 
 	/**
@@ -658,9 +703,25 @@ public abstract class Tag implements Cloneable, Iterable<Tag> {
 	 *             payload cannot be interpreted as an int.
 	 */
 	public int getInt(String tagname) {
-		Tag tag = child(tagname);
-		if (tag == null) throw new NoSuchElementException("Bad tagname: " + tagname);
-		return tag.getInt();
+		return child(tagname).getInt();
+	}
+
+	/**
+	 * Short form of <code>child(i0, i1...).getInt()</code>.
+	 * 
+	 * @param indices
+	 *            Indices of children to find.
+	 * @return An int representation of the payload of the specified child tag.
+	 * @throws IndexOutOfBoundsException
+	 *             If there is no child by the specified <code>Integer</code> index.
+	 * @throws NoSuchElementException
+	 *             If there is no child by the specified name index.
+	 * @throws UnsupportedOperationException
+	 *             If there are no children accessible by index or there is no directly accessible payload or the
+	 *             payload cannot be interpreted as an int.
+	 */
+	public int getInt(Object... indices) {
+		return child(indices).getInt();
 	}
 
 	/**
@@ -689,9 +750,7 @@ public abstract class Tag implements Cloneable, Iterable<Tag> {
 	 *             payload cannot be interpreted as a long.
 	 */
 	public long getLong(int i) {
-		Tag tag = child(i);
-		if (tag == null) throw new IndexOutOfBoundsException("Bad index: " + i);
-		return tag.getLong();
+		return child(i).getLong();
 	}
 
 	/**
@@ -707,9 +766,25 @@ public abstract class Tag implements Cloneable, Iterable<Tag> {
 	 *             payload cannot be interpreted as a long.
 	 */
 	public long getLong(String tagname) {
-		Tag tag = child(tagname);
-		if (tag == null) throw new NoSuchElementException("Bad tagname: " + tagname);
-		return tag.getLong();
+		return child(tagname).getLong();
+	}
+
+	/**
+	 * Short form of <code>child(i0, i1...).getLong()</code>.
+	 * 
+	 * @param indices
+	 *            Indices of children to find.
+	 * @return A long representation of the payload of the specified child tag.
+	 * @throws IndexOutOfBoundsException
+	 *             If there is no child by the specified <code>Integer</code> index.
+	 * @throws NoSuchElementException
+	 *             If there is no child by the specified name index.
+	 * @throws UnsupportedOperationException
+	 *             If there are no children accessible by index or there is no directly accessible payload or the
+	 *             payload cannot be interpreted as a long.
+	 */
+	public long getLong(Object... indices) {
+		return child(indices).getLong();
 	}
 
 	/**
@@ -738,9 +813,7 @@ public abstract class Tag implements Cloneable, Iterable<Tag> {
 	 *             payload cannot be interpreted as a float.
 	 */
 	public float getFloat(int i) {
-		Tag tag = child(i);
-		if (tag == null) throw new IndexOutOfBoundsException("Bad index: " + i);
-		return tag.getFloat();
+		return child(i).getFloat();
 	}
 
 	/**
@@ -756,9 +829,25 @@ public abstract class Tag implements Cloneable, Iterable<Tag> {
 	 *             payload cannot be interpreted as a float.
 	 */
 	public float getFloat(String tagname) {
-		Tag tag = child(tagname);
-		if (tag == null) throw new NoSuchElementException("Bad tagname: " + tagname);
-		return tag.getFloat();
+		return child(tagname).getFloat();
+	}
+
+	/**
+	 * Short form of <code>child(i0, i1...).getFloat()</code>.
+	 * 
+	 * @param indices
+	 *            Indices of children to find.
+	 * @return A float representation of the payload of the specified child tag.
+	 * @throws IndexOutOfBoundsException
+	 *             If there is no child by the specified <code>Integer</code> index.
+	 * @throws NoSuchElementException
+	 *             If there is no child by the specified name index.
+	 * @throws UnsupportedOperationException
+	 *             If there are no children accessible by index or there is no directly accessible payload or the
+	 *             payload cannot be interpreted as a float.
+	 */
+	public float getFloat(Object... indices) {
+		return child(indices).getFloat();
 	}
 
 	/**
@@ -787,9 +876,7 @@ public abstract class Tag implements Cloneable, Iterable<Tag> {
 	 *             payload cannot be interpreted as a double.
 	 */
 	public double getDouble(int i) {
-		Tag tag = child(i);
-		if (tag == null) throw new IndexOutOfBoundsException("Bad index: " + i);
-		return tag.getDouble();
+		return child(i).getDouble();
 	}
 
 	/**
@@ -805,9 +892,25 @@ public abstract class Tag implements Cloneable, Iterable<Tag> {
 	 *             payload cannot be interpreted as a double.
 	 */
 	public double getDouble(String tagname) {
-		Tag tag = child(tagname);
-		if (tag == null) throw new NoSuchElementException("Bad tagname: " + tagname);
-		return tag.getDouble();
+		return child(tagname).getDouble();
+	}
+
+	/**
+	 * Short form of <code>child(i0, i1...).getDouble()</code>.
+	 * 
+	 * @param indices
+	 *            Indices of children to find.
+	 * @return A double representation of the payload of the specified child tag.
+	 * @throws IndexOutOfBoundsException
+	 *             If there is no child by the specified <code>Integer</code> index.
+	 * @throws NoSuchElementException
+	 *             If there is no child by the specified name index.
+	 * @throws UnsupportedOperationException
+	 *             If there are no children accessible by index or there is no directly accessible payload or the
+	 *             payload cannot be interpreted as a double.
+	 */
+	public double getDouble(Object... indices) {
+		return child(indices).getDouble();
 	}
 
 	/**

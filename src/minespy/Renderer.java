@@ -159,7 +159,7 @@ public class Renderer {
 					}
 
 				}
-			} catch (NoSuchElementException e) {
+			} catch (NoMoreChunksException e) {
 				// done
 			} catch (Exception e) {
 				// abnormal termination

@@ -72,11 +72,7 @@ public class TagList extends Tag {
 
 	@Override
 	public Tag child(int i) {
-		try {
-			return m_data.get(i);
-		} catch (IndexOutOfBoundsException e) {
-			return null;
-		}
+		return m_data.get(i);
 	}
 
 	@Override
