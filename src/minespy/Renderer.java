@@ -3,7 +3,6 @@ package minespy;
 import java.awt.image.BufferedImage;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -48,7 +47,7 @@ public class Renderer {
 		throttle = f;
 	}
 
-	public boolean addRenderProgressListener(IRenderListener rl) {
+	public boolean addRenderListener(IRenderListener rl) {
 		if (rl == null) throw new NullPointerException();
 		if (m_listeners.add(rl)) {
 			rl.notifyRenderer(this);
@@ -58,8 +57,8 @@ public class Renderer {
 		return false;
 	}
 
-	public boolean removeRenderProgressListener(IRenderListener rpl) {
-		return m_listeners.remove(rpl);
+	public boolean removeRenderListener(IRenderListener rl) {
+		return m_listeners.remove(rl);
 	}
 
 	public BufferedImage getImage() {

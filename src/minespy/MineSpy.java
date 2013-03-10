@@ -138,7 +138,7 @@ public class MineSpy {
 					final Renderer r = new Renderer(world, Config.getConfig().getBlockColorProvider(),
 							p.getMapShaderFactory(), p.getSkylight());
 					if (rl != null) {
-						r.addRenderProgressListener(rl);
+						r.addRenderListener(rl);
 					}
 					r.setThrottle(p.getThrottle());
 
