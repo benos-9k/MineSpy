@@ -88,10 +88,8 @@ public class MineSpy {
 							+ "_" + p.getFileName() + ".png");
 
 					File regiondir = new File(worlddir.getPath());
-					if (dim.equals(Dimension.NETHER)) {
-						regiondir = new File(worlddir.getPath() + File.separator + "DIM-1");
-					} else if (dim.equals(Dimension.END)) {
-						regiondir = new File(worlddir.getPath() + File.separator + "DIM1");
+					if (dim.getIndex() != 0) {
+						regiondir = new File(worlddir.getPath() + File.separator + "DIM" + dim.getIndex());
 					}
 
 					regiondir = new File(regiondir.getPath() + File.separator + "region");
@@ -112,9 +110,7 @@ public class MineSpy {
 						for (File f : new File(worlddir.getPath() + File.separator + "players").listFiles()) {
 							Tag player = Tag.parse(new DataInputStream(new GZIPInputStream(new FileInputStream(f))));
 							int playerdim = player.getInt("Dimension");
-							if ((playerdim == -1) != (dim.equals(Dimension.NETHER))) continue;
-							if ((playerdim == 1) != (dim.equals(Dimension.END))) continue;
-							if ((playerdim == 0) != (dim.equals(Dimension.OVERWORLD))) continue;
+							if (playerdim != dim.getIndex()) continue;
 							double[] pos = new double[3];
 							pos[0] = player.getDouble("Pos", 0);
 							pos[1] = player.getDouble("Pos", 1);
