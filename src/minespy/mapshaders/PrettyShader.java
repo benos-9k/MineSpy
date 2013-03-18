@@ -9,14 +9,18 @@ public class PrettyShader implements IMapShader {
 	public static class Factory extends AbstractMapShaderFactory {
 
 		public Factory() {
-			createProperty("SurfaceNormalBaseLightingModifier", Double.class, new Double(0.5));
-			createProperty("SurfaceNormalTransparentLightingModifier", Double.class, new Double(0.5));
+			createProperty("SurfaceNormalBaseLightingModifier", Float.class, 0.4f);
+			createProperty("SurfaceNormalTopLightingModifier", Float.class, 0.5f);
+			createProperty("SurfaceNormalBaseAlphaCutoff", Integer.class, 240);
+			createProperty("SurfaceNormalTopAlphaCutoff", Integer.class, 64);
 		}
 
 		@Override
 		public IMapShader createInstance() {
-			return new PrettyShader(this.<Double> getProperty("SurfaceNormalBaseLightingModifier"),
-					this.<Double> getProperty("SurfaceNormalTransparentLightingModifier"));
+			return new PrettyShader(this.<Float> getProperty("SurfaceNormalBaseLightingModifier"),
+					this.<Float> getProperty("SurfaceNormalTopLightingModifier"),
+					this.<Integer> getProperty("SurfaceNormalBaseAlphaCutoff"),
+					this.<Integer> getProperty("SurfaceNormalTopAlphaCutoff"));
 		}
 
 		@Override
@@ -35,11 +39,14 @@ public class PrettyShader implements IMapShader {
 		}
 	}
 
-	private final double m_a, m_b;
+	private final float m_a, m_b;
+	private final int m_c, m_d;
 
-	public PrettyShader(double a_, double b_) {
+	public PrettyShader(float a_, float b_, int c_, int d_) {
 		m_a = a_;
 		m_b = b_;
+		m_c = c_;
+		m_d = d_;
 	}
 
 	protected static int height(YRun yrun) {
@@ -59,14 +66,11 @@ public class PrettyShader implements IMapShader {
 
 	protected static int heightOpaque(YRun yrun, IBlockColorProvider cp, int alpha) {
 		// the height of the highest block of at least that alpha value
-		// FIXME this is a bottleneck!
-		// but it didn't use to be quite so bad...
 		int biome = yrun.getBiome();
 		for (int y = 256; y-- > 0;) {
 			if ((cp.getRGB(yrun.getBlock(y), yrun.getData(y), biome) >>> 24) >= alpha) return y + 1;
 		}
 		return 0;
-		// return yrun.getHeight();
 	}
 
 	protected static float normalYOpaque(IWorld w, int x, int z, IBlockColorProvider cp, int alpha) {
@@ -139,26 +143,52 @@ public class PrettyShader implements IMapShader {
 
 	@Override
 	public int shade(IWorld w, int x, int z, IBlockColorProvider cp, int skylight) {
-		double f_skylight = skylight / 15d;
+		float f_skylight = skylight / 15f;
 		YRun yrun = w.getYRun(x, z);
-		int ymax = height(yrun);
-		int y = heightOpaque(yrun, cp);
-		int rgb = cp.getRGB(yrun.getBlock(y - 1), yrun.getData(y - 1), yrun.getBiome());
-		rgb = (0xFF000000 & rgb)
-				| colorMul(
-						0x00FFFFFF & rgb,
-						Math.min(yrun.getBlockLight(y) / 15d + yrun.getSkyLight(y) / 15d * f_skylight
-								* (1d - ((1d - normalYOpaque(w, x, z, cp, 255)) * m_a)), 1d));
-		for (; y < ymax; y++) {
+		
+		// the old code, with more surface normal computations and naive alpha blending
+		// int ymax = height(yrun);
+		// int y = heightOpaque(yrun, cp);
+		// int rgb = cp.getRGB(yrun.getBlock(y - 1), yrun.getData(y - 1), yrun.getBiome());
+		// rgb = (0xFF000000 & rgb)
+		// | colorMul(
+		// 0x00FFFFFF & rgb,
+		// Math.min(yrun.getBlockLight(y) / 15d + yrun.getSkyLight(y) / 15d * f_skylight
+		// * (1d - ((1d - normalYOpaque(w, x, z, cp, 255)) * m_a)), 1d));
+		// for (; y < ymax; y++) {
+		// int rgb1 = cp.getRGB(yrun.getBlock(y), yrun.getData(y), yrun.getBiome());
+		// rgb1 = (0xFF000000 & rgb1)
+		// | colorMul(
+		// 0x00FFFFFF & rgb1,
+		// Math.min(yrun.getBlockLight(y + 1) / 15d + yrun.getSkyLight(y + 1) / 15d * f_skylight
+		// * (1d - ((1d - normalYOpaque(w, x, z, cp, (rgb1 >>> 24))) * m_b)), 1d));
+		// rgb = alphaBlend(rgb, rgb1);
+		// }
+		// return rgb;
+
+		int yi = height(yrun) - 1;
+		int y = yi;
+
+		int rgb = 0;
+
+		for (; (rgb >>> 24) < 255 && y > 0; y--) {
 			int rgb1 = cp.getRGB(yrun.getBlock(y), yrun.getData(y), yrun.getBiome());
-			rgb1 = (0xFF000000 & rgb1)
-					| colorMul(
-							0x00FFFFFF & rgb1,
-							Math.min(yrun.getBlockLight(y + 1) / 15d + yrun.getSkyLight(y + 1) / 15d * f_skylight
-									* (1d - ((1d - normalYOpaque(w, x, z, cp, (rgb1 >>> 24))) * m_b)), 1d));
-			rgb = alphaBlend(rgb, rgb1);
+			float k = yrun.getBlockLight(y + 1) / 15f + yrun.getSkyLight(y + 1) / 15f * f_skylight;
+			k = k > 1f ? 1f : k;
+			rgb1 = (0xFF000000 & rgb1) | colorMul(rgb1, k);
+			rgb = alphaBlend(rgb1, rgb);
 		}
+
+		// surface normal modifier for base
+		rgb = alphaBlend(((int) ((1f - normalYOpaque(w, x, z, cp, m_c)) * m_a * 255f)) << 24, rgb);
+
+		// surface normal modifier for top
+		if (yi - y > 0) {
+			rgb = (rgb & 0xFF000000) | colorMul(rgb, 1f - (1f - normalYOpaque(w, x, z, cp, m_d)) * m_b);
+		}
+
 		return rgb;
+
 	}
 
 	@Override

@@ -106,12 +106,13 @@ minecraftdir "~/.minecraft"
 // Mac
 minecraftdir "~/Library/Application Support/minecraft"
 
-block 0 name "Air" transparent
+block 0 name "Air" transparent alpha 0 color 255 0 0 // red?! intentional, for shader debugging
 block 1 name "Stone" color 130 130 130
 block 2
 	name "Grass Block"
 	// FIXME river biome color (and others?)
-	color 80 255 48
+	// for now, let's just make it nicer
+	color 69 109 51
 	biome 2 color 108 104 48 // desert
 	biome 17 color 108 104 48 // desert hills
 	biome 1 color 82 107 51 // plains
@@ -140,13 +141,13 @@ block 6 name "Saplings" transparent color 0 255 0
 block 7 name "Bedrock" color 80 80 80
 block 8
 	name "Water" transparent
-	alpha 100 color 31 43 157
+	alpha 130 color 31 43 157
 	biome 6 alpha 150 color 50 75 99
  
 block 9
 	name "Stationary Water" transparent
-	alpha 100 color 31 43 157
-	biome 6 alpha 130 color 50 75 99
+	alpha 130 color 31 43 157
+	biome 6 alpha 150 color 50 75 99
  
 block 10 name "Lava" transparent color 255 128 0
 block 11 name "Stationary Lava" transparent color 255 128 0

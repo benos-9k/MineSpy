@@ -18,8 +18,8 @@ class Util {
 		return a_x * b_y - a_y * b_x;
 	}
 
-	static int colorMul(int rgb, double k) {
-		k = k < 0d ? 0d : k;
+	static int colorMul(int rgb, float k) {
+		k = k < 0f ? 0f : k;
 		int a = (int) ((rgb >>> 24) * k);
 		a = a < 255 ? a : 255;
 		int r = (int) (((rgb >>> 16) & 0xFF) * k);
@@ -44,12 +44,14 @@ class Util {
 	}
 
 	static int alphaBlend(int base, int top) {
-		double alpha_base = ((base & 0xFF000000) >>> 24) * (1d / 255d);
-		double alpha_top = ((top & 0xFF000000) >>> 24) * (1d / 255d);
-		double alpha = 1d - (1d - alpha_top) * (1d - alpha_base);
-		// color = alpha_top * color_top + (1 - alpha_top) * color_base
+		float alpha_base = (base >>> 24) / 255f;
+		float alpha_top = (top >>> 24) / 255f;
+		float alpha = 1f - (1f - alpha_top) * (1f - alpha_base);
+		float iAlpha = 1f / alpha;
+		// color = alpha_top * color_top + (1 - alpha_top) * alpha_base * color_base
 		return (((int) (alpha * 255d)) << 24)
-				| colorAdd(colorMul(0x00FFFFFF & top, alpha_top), colorMul(0x00FFFFFF & base, 1d - alpha_top));
+				| colorAdd(colorMul(0x00FFFFFF & top, alpha_top * iAlpha),
+						colorMul(0x00FFFFFF & base, (1f - alpha_top) * alpha_base * iAlpha));
 	}
 
 	static float fastInverseSqrt(float number) {

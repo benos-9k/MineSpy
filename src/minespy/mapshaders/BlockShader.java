@@ -31,14 +31,15 @@ public class BlockShader implements IMapShader {
 
 	@Override
 	public int shade(IWorld w, int x, int z, IBlockColorProvider cp, int skylight) {
-		double f_skylight = skylight / 15d;
+		float f_skylight = skylight / 15f;
 		YRun yrun = w.getYRun(x, z);
 		for (int y = 256; y-- > 0;) {
 			int block = yrun.getBlock(y);
 			if (block != 0) {
 				int rgb = cp.getRGB(block, yrun.getData(y), yrun.getBiome());
-				return 0xFF000000 | colorMul(rgb,
-						Math.min(yrun.getBlockLight(y + 1) / 15d + yrun.getSkyLight(y + 1) / 15d * f_skylight, 1d));
+				float k = yrun.getBlockLight(y + 1) / 15f + yrun.getSkyLight(y + 1) / 15f * f_skylight;
+				k = k > 1f ? 1f : k;
+				return 0xFF000000 | colorMul(rgb, k);
 			}
 		}
 		return 0;
