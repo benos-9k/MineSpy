@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import nbt.Tag;
+
 public class TagCompound extends Tag {
 
 	public static final byte TAG_ID = 10;
@@ -83,10 +85,11 @@ public class TagCompound extends Tag {
 	@Override
 	public <T> void set(String tagname, T t) {
 		if (tagname == null) throw new NullPointerException();
-		Tag tag = child(tagname);
-		if (tag != null) {
+		try {
+			Tag tag = child(tagname);
 			tag.set(t);
-		} else {
+		} catch (NoSuchElementException e) {
+			// child by that name doesn't exist
 			add(Tag.wrap(tagname, t));
 		}
 	}
