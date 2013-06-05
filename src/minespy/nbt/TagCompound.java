@@ -8,8 +8,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import nbt.Tag;
-
 public class TagCompound extends Tag {
 
 	public static final byte TAG_ID = 10;
