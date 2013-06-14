@@ -2,6 +2,9 @@ package minespy.gui;
 
 import java.awt.event.*;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.*;
 
 import minespy.*;
@@ -151,7 +154,7 @@ public class MainFrame extends JFrame {
 		check_showmarkers.setSelected(true);
 		root.add(check_showmarkers);
 
-		check_filterblocks = new JCheckBox("Filter blocks");
+		check_filterblocks = new JCheckBox("Filter blocks, eg: 1, 2, 3..23, 78");
 		check_filterblocks.setAlignmentX(0f);
 		root.add(check_filterblocks);
 
@@ -179,7 +182,7 @@ public class MainFrame extends JFrame {
 		box_text_filterblocks.add(button_filterblocks);
 		root.add(box_text_filterblocks);
 
-		check_filterlevels = new JCheckBox("Filter levels");
+		check_filterlevels = new JCheckBox("Filter levels, eg: 1, 2, 3..23, 78");
 		check_filterlevels.setAlignmentX(0f);
 		root.add(check_filterlevels);
 
@@ -299,7 +302,7 @@ public class MainFrame extends JFrame {
 
 			if (check_filterblocks.isSelected()) {
 				try {
-					int[] blocks = parseIntArray(text_filterblocks.getText());
+					int[] blocks = MineSpy.parseIntArray(text_filterblocks.getText());
 					p.setBlockFilterEnabled(true);
 					p.setBlockFilterInclusive(radio_filterblocks_include.isSelected());
 					p.setBlockFilter(blocks);
@@ -314,7 +317,7 @@ public class MainFrame extends JFrame {
 
 			if (check_filterlevels.isSelected()) {
 				try {
-					int[] levels = parseIntArray(text_filterlevels.getText());
+					int[] levels = MineSpy.parseIntArray(text_filterlevels.getText());
 					p.setLevelFilterEnabled(true);
 					p.setLevelFilterInclusive(radio_filterlevels_include.isSelected());
 					p.setLevelFilter(levels);
@@ -422,15 +425,6 @@ public class MainFrame extends JFrame {
 			return m_renderer;
 		}
 
-	}
-
-	private static int[] parseIntArray(String s) {
-		String[] tokens = s.trim().split("\\s+");
-		int[] ret = new int[tokens.length];
-		for (int i = 0; i < tokens.length; i++) {
-			ret[i] = Integer.parseInt(tokens[i]);
-		}
-		return ret;
 	}
 
 }

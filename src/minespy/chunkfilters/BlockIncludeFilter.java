@@ -3,6 +3,7 @@ package minespy.chunkfilters;
 import java.util.Arrays;
 
 import minespy.IChunk;
+import minespy.MineSpy;
 
 public class BlockIncludeFilter implements IChunkFilter {
 
@@ -11,6 +12,7 @@ public class BlockIncludeFilter implements IChunkFilter {
 
 	public BlockIncludeFilter(int[] blocks_) {
 		m_blocks = Arrays.copyOf(blocks_, blocks_.length);
+		Arrays.sort(m_blocks);
 		for (int block : blocks_) {
 			m_include[block] = true;
 		}
@@ -47,7 +49,7 @@ public class BlockIncludeFilter implements IChunkFilter {
 
 	@Override
 	public String getFileName() {
-		return "includeblocks" + Arrays.toString(m_blocks).replace(" ", "");
+		return "ib(" + MineSpy.intArrayToString(m_blocks) + ")";
 	}
 
 }

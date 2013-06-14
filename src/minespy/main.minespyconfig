@@ -14,19 +14,22 @@
 // `` : string literal
 // |  : xor
 //
+// The 'intlist' type refers to a string, enclosed in double quotes, of comma-separated ranges on integers, where
+// a range is either a single integer, or two integers separated by '..'. Whitespace may surround any separators.
+//
 // Commands:
 //	- savedir <"path name">
 //			Adds a path whose subdirectories should be tested as Minecraft saves. Any subdirectory
-//			with child "level.dat" will be available to select as a world to render. The "saves" folder
-//			in ".minecraft" will automatically be added. If the path name begins with "~/" the "~" will
-//			be replaced with the current user's home directory. All "/" will be replaced with the system
+//			with child 'level.dat' will be available to select as a world to render. The 'saves' folder
+//			in '.minecraft' will automatically be added. If the path name begins with '~/' the '~' will
+//			be replaced with the current user's home directory. All '/' will be replaced with the system
 //			file separator.
 //
 //	- minecraftdir <"path name">
 //			Adds a path to be tested for the minecraft directory.
-//			The first directory found (in order listed) with child "bin/minecraft.jar" will be used.
-//			If the path name begins with "~/" the "~" will be replaced with the current user's home directory.
-//			All "/" will be replaced with the system file separator.
+//			The first directory found (in order listed) with child 'bin/minecraft.jar' will be used.
+//			If the path name begins with '~/' the '~' will be replaced with the current user's home directory.
+//			All '/' will be replaced with the system file separator.
 //
 //	- block <(int) block id>
 //			Sets the focused block id.
@@ -74,19 +77,19 @@
 //	- showmarkers <`on` | `off`>
 //			Turn showing player locations on or off.
 //
-//	- includeblocks <"space-separated block id list"> 
+//	- includeblocks <(intlist) id_list> 
 //			Set a block filter to include specified.
 //
-//	- excludeblocks <"space-separated block id list"> 
+//	- excludeblocks <(intlist) id_list> 
 //			Set a block filter to exclude specified.
 //
 //	- unfilterblocks
 //			Unset the block filter.
 //
-//	- includelevels <"space-separated y coord list">
+//	- includelevels <(intlist) y_coord_list>
 //			Set a y-level filter to include specified.
 //
-//	- excludelevels <"space-separated y coord list">
+//	- excludelevels <(intlist) y_coord_list>
 //			Set a y-level filter to exclude specified.
 //
 //	- unfilterlevels

@@ -3,6 +3,7 @@ package minespy.chunkfilters;
 import java.util.Arrays;
 
 import minespy.IChunk;
+import minespy.MineSpy;
 
 public class LevelIncludeFilter implements IChunkFilter {
 
@@ -11,6 +12,7 @@ public class LevelIncludeFilter implements IChunkFilter {
 
 	public LevelIncludeFilter(int[] levels_) {
 		m_levels = Arrays.copyOf(levels_, levels_.length);
+		Arrays.sort(m_levels);
 		for (int level : levels_) {
 			if (level >= 0 && level < 256) {
 				m_include[level] = true;
@@ -48,7 +50,7 @@ public class LevelIncludeFilter implements IChunkFilter {
 
 	@Override
 	public String getFileName() {
-		return "includelevels" + Arrays.toString(m_levels).replace(" ", "");
+		return "il(" + MineSpy.intArrayToString(m_levels) + ")";
 	}
 
 }

@@ -55,6 +55,7 @@ public final class Config {
 
 	private Config() {
 		try {
+			// TODO parse files individually so proper errors can be given!
 			// need to add whitespace between files
 			byte[] crlf = new byte[] { 13, 10 };
 
@@ -246,21 +247,21 @@ public final class Config {
 							throw new IOException("Bad showmarkers param: " + mode);
 						}
 					} else if (gobble(scan, "includeblocks")) {
-						preset.setBlockFilter(parseIntArray(nextQuotedString(scan)));
+						preset.setBlockFilter(MineSpy.parseIntArray(nextQuotedString(scan)));
 						preset.setBlockFilterInclusive(true);
 						preset.setBlockFilterEnabled(true);
 					} else if (gobble(scan, "excludeblocks")) {
-						preset.setBlockFilter(parseIntArray(nextQuotedString(scan)));
+						preset.setBlockFilter(MineSpy.parseIntArray(nextQuotedString(scan)));
 						preset.setBlockFilterInclusive(false);
 						preset.setBlockFilterEnabled(true);
 					} else if (gobble(scan, "unfilterblocks")) {
 						preset.setBlockFilterEnabled(false);
 					} else if (gobble(scan, "includelevels")) {
-						preset.setLevelFilter(parseIntArray(nextQuotedString(scan)));
+						preset.setLevelFilter(MineSpy.parseIntArray(nextQuotedString(scan)));
 						preset.setLevelFilterInclusive(true);
 						preset.setLevelFilterEnabled(true);
 					} else if (gobble(scan, "excludelevels")) {
-						preset.setLevelFilter(parseIntArray(nextQuotedString(scan)));
+						preset.setLevelFilter(MineSpy.parseIntArray(nextQuotedString(scan)));
 						preset.setLevelFilterInclusive(false);
 						preset.setLevelFilterEnabled(true);
 					} else if (gobble(scan, "unfilterlevels")) {
@@ -324,15 +325,6 @@ public final class Config {
 				}
 			}
 		}
-	}
-
-	private static int[] parseIntArray(String s) {
-		String[] tokens = s.trim().split("\\s+");
-		int[] ret = new int[tokens.length];
-		for (int i = 0; i < tokens.length; i++) {
-			ret[i] = Integer.parseInt(tokens[i]);
-		}
-		return ret;
 	}
 
 	private static String nextQuotedString(Scanner scan) {

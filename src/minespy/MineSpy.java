@@ -212,7 +212,9 @@ public class MineSpy {
 						try {
 							MineSpy.logf("Writing image to file '%s'...\n", imgfile.getName());
 							long time_imgwrite_start = System.currentTimeMillis();
-							ImageIO.write(r.getImage(), "PNG", imgfile);
+							OutputStream os = new FileOutputStream(imgfile);
+							ImageIO.write(r.getImage(), "PNG", os);
+							os.close();
 							MineSpy.logf("Image written to file in %.3f seconds.\n",
 									(System.currentTimeMillis() - time_imgwrite_start) / 1000d);
 						} catch (Exception e) {
@@ -256,6 +258,55 @@ public class MineSpy {
 
 	public static synchronized void addLogOutput(PrintWriter p) {
 		logouts.add(p);
+	}
+	
+	public static int[] parseIntArray(String s) {
+		String[] tokens = s.trim().split("\\s*,\\s*");
+		List<Integer> ints = new ArrayList<Integer>();
+		for (String token : tokens) {
+			try {
+				ints.add(Integer.parseInt(token));
+			} catch (NumberFormatException e) {
+				String[] tokens2 = token.split("\\s*\\.\\.\\s*");
+				int i0 = Integer.parseInt(tokens2[0]);
+				int i1 = Integer.parseInt(tokens2[1]);
+				for (int i = i0; i <= i1; i++) {
+					ints.add(i);
+				}
+			}
+		}
+		int[] ret = new int[ints.size()];
+		for (int i = 0; i < ints.size(); i++) {
+			ret[i] = ints.get(i);
+		}
+		return ret;
+	}
+	
+	public static String intArrayToString(int[] arr) {
+		StringBuilder sb = new StringBuilder();
+		int x = arr[0];
+		int count = 1;
+		sb.append(x);
+		for (int i = 1; i < arr.length; i++) {
+			if (arr[i] - x == 1) {
+				count++;
+				x = arr[i];
+			} else {
+				if (count > 1) {
+					sb.append(count == 2 ? "," : "..");
+					sb.append(x);
+				}
+				sb.append(",");
+				sb.append(arr[i]);
+				x = arr[i];
+				count = 1;
+			}
+		}
+		if (count > 1) {
+			sb.append(count == 2 ? "," : "..");
+			sb.append(x);
+		}
+		return sb.toString();
 	}
 
 }
