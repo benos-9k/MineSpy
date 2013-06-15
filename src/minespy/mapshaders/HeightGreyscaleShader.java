@@ -27,12 +27,19 @@ public class HeightGreyscaleShader implements IMapShader {
 			return "hmap-grey";
 		}
 	}
+	
+	protected static int height(YRun yrun) {
+		for (int y = 256; y-- > 0;) {
+			if (yrun.getBlock(y) != 0) return y + 1;
+		}
+		return 0;
+	}
 
 	@Override
 	public int shade(IWorld w, int x, int z, IBlockColorProvider block_color_provider, int skylight) {
 		YRun yrun = w.getYRun(x, z);
-		int h = yrun.getHeight();
-		return 0xFF000000 | (h << 16) | (h << 8) | h;
+		int h = height(yrun);
+		return (h > 0 ? 0xFF000000 : 0) | (h << 16) | (h << 8) | h;
 	}
 
 	@Override

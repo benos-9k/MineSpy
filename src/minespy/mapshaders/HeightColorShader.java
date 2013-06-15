@@ -30,10 +30,18 @@ public class HeightColorShader implements IMapShader {
 		}
 	}
 
+	protected static int height(YRun yrun) {
+		for (int y = 256; y-- > 0;) {
+			if (yrun.getBlock(y) != 0) return y + 1;
+		}
+		return 0;
+	}
+	
 	@Override
 	public int shade(IWorld w, int x, int z, IBlockColorProvider block_color_provider, int skylight) {
 		YRun yrun = w.getYRun(x, z);
-		return 0xFF000000 | Color.getHSBColor((1f - yrun.getHeight() / 255f) * 0.7f, 1f, 1f).getRGB();
+		int h = height(yrun);
+		return (h > 0 ? 0xFF000000 : 0) | (0x00FFFFFF & Color.getHSBColor((1f - h / 255f) * 0.7f, 1f, 1f).getRGB());
 	}
 
 	@Override
