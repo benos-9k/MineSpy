@@ -97,7 +97,8 @@ public class MainFrame extends JFrame {
 		box_custom.setAlignmentX(0f);
 		text_custom = new JTextField(30);
 		box_custom.add(text_custom);
-		button_custom = new JButton("Browse...");
+		button_custom = new JButton();
+		button_custom.setAction(new WorldChooseAction());
 		box_custom.add(button_custom);
 		root.add(box_custom);
 
@@ -257,6 +258,25 @@ public class MainFrame extends JFrame {
 		setResizable(false);
 	}
 
+	private class WorldChooseAction extends AbstractAction {
+		
+		private static final long serialVersionUID = 1L;
+
+		public WorldChooseAction() {
+			super("Browse...");
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			JFileChooser fc = new JFileChooser(Config.getConfig().getMinecraftDir());
+			fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+				text_custom.setText(fc.getSelectedFile().getAbsolutePath());
+			}
+		}
+		
+	}
+	
 	private class RenderAction extends AbstractAction {
 
 		private static final long serialVersionUID = 1L;

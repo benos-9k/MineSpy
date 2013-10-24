@@ -112,7 +112,7 @@ public abstract class Tag implements Cloneable, Iterable<Tag> {
 	 */
 	public static boolean addTagParser(Tag.Parser parser) {
 		if (parser == null) throw new NullPointerException();
-		if (parser.tagID() < 1) throw new IllegalArgumentException("Invalid tagid.");
+		if (parser.tagID() < 1) throw new IllegalArgumentException("Invalid tagid " + parser.tagID());
 		if (tag_parsers[parser.tagID()] == null) {
 			tag_parsers[parser.tagID()] = parser;
 			return true;
@@ -130,7 +130,7 @@ public abstract class Tag implements Cloneable, Iterable<Tag> {
 	 *             If the tag id is not valid.
 	 */
 	public static Tag.Parser getTagParser(byte tagid) {
-		if (tagid < 1) throw new IllegalArgumentException("Invalid tagid.");
+		if (tagid < 1) throw new IllegalArgumentException("Invalid tagid " + tagid);
 		return tag_parsers[tagid];
 	}
 
@@ -151,7 +151,7 @@ public abstract class Tag implements Cloneable, Iterable<Tag> {
 	 */
 	public static boolean addTagWrapper(Class<?> c, Tag.Wrapper wrapper) {
 		if (c == null || wrapper == null) throw new NullPointerException();
-		if (wrapper.tagID() < 1) throw new IllegalArgumentException("Invalid tagid.");
+		if (wrapper.tagID() < 1) throw new IllegalArgumentException("Invalid tagid " + wrapper.tagID());
 		if (tag_id_wrappers[wrapper.tagID()] != null && tag_id_wrappers[wrapper.tagID()] != wrapper) {
 			// there is a wrapper for this tagid, and it's not this one
 			return false;
@@ -174,7 +174,7 @@ public abstract class Tag implements Cloneable, Iterable<Tag> {
 	 *             If the tag id is not valid.
 	 */
 	public static Tag.Wrapper getTagWrapper(byte tagid) {
-		if (tagid < 1) throw new IllegalArgumentException("Invalid tagid.");
+		if (tagid < 1) throw new IllegalArgumentException("Invalid tagid " + tagid);
 		return tag_id_wrappers[tagid];
 	}
 
@@ -236,6 +236,10 @@ public abstract class Tag implements Cloneable, Iterable<Tag> {
 			m_typename = typename_;
 		}
 
+		public boolean tagsHaveNames() {
+			return true;
+		}
+		
 		public final byte tagID() {
 			return m_tagid;
 		}
@@ -248,7 +252,7 @@ public abstract class Tag implements Cloneable, Iterable<Tag> {
 
 		public Tag parse(DataInput in) throws IOException {
 			// tagid byte already parsed
-			String name = in.readUTF();
+			String name = tagsHaveNames() ? in.readUTF() : "";
 			return parsePayload(name, in);
 		}
 
@@ -259,7 +263,7 @@ public abstract class Tag implements Cloneable, Iterable<Tag> {
 		public abstract Class<?> payloadClass();
 
 	}
-
+	
 	/**
 	 * Interface to allow arbitrary objects to be wrapped in a specific tag type.
 	 */
@@ -296,7 +300,7 @@ public abstract class Tag implements Cloneable, Iterable<Tag> {
 
 		@Override
 		public Tag next() {
-			return null;
+			throw new NoSuchElementException();
 		}
 
 		@Override
@@ -304,6 +308,48 @@ public abstract class Tag implements Cloneable, Iterable<Tag> {
 			throw new UnsupportedOperationException();
 		}
 
+	}
+	
+	public static Tag TAG_End = new Tag((byte) 0, "") {
+
+		@Override
+		public <T> T get() {
+			return null;
+		}
+
+		@Override
+		public <T> void set(T t) {
+			// do nothing
+		}
+
+		@Override
+		protected void writePayload(DataOutput out) throws IOException {
+			throw new UnsupportedOperationException();
+		}
+		
+	};
+	
+	public static class TagEndParser extends Parser {
+
+		protected TagEndParser() {
+			super((byte) 0, "TAG_End");
+		}
+		
+		@Override
+		public boolean tagsHaveNames() {
+			return false;
+		}
+
+		@Override
+		protected Tag parsePayload(String name, DataInput in) throws IOException {
+			return null;
+		}
+
+		@Override
+		public Class<?> payloadClass() {
+			return null;
+		}
+		
 	}
 
 	private final byte m_tagid;

@@ -21,10 +21,16 @@ public class TagList extends Tag {
 		protected Tag parsePayload(String name, DataInput in) throws IOException {
 			byte tagid = in.readByte();
 			int size = in.readInt();
+			if (tagid == 0) {
+				// list of TAG_End, wtf?
+				if (size != 0) throw new IOException("List of TAG_End detected, name=" + name + ", size=" + size);
+			}
 			TagList ret = new TagList(name, tagid);
-			Tag.Parser parser = Tag.getTagParser(tagid);
-			for (int i = 0; i < size; i++) {
-				ret.add(parser.parsePayload("", in));
+			if (size > 0) {
+				Tag.Parser parser = Tag.getTagParser(tagid);
+				for (int i = 0; i < size; i++) {
+					ret.add(parser.parsePayload("", in));
+				}
 			}
 			return ret;
 		}

@@ -238,6 +238,7 @@ public class RegionFileWorld implements IWorld {
 				c = new Chunk(Tag.parse(m_rf.getChunkDataInputStream(m_cc.x() & 31, m_cc.z() & 31)));
 			} catch (IOException e) {
 				// well shit.
+				e.printStackTrace();
 				c = Chunk.BLANK;
 			}
 			m_ref = new SoftReference<Chunk>(c);
